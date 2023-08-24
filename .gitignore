@@ -193,7 +193,10 @@ Copy code
 # Arquivos de configuração
 
 config.py
+<<<<<<< HEAD
 share
 
+=======
+>>>>>>> 830bfa7de54c7ae61826b33f9cab59271bff9779
 
 # End of https://www.toptal.com/developers/gitignore/api/venv,python

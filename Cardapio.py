@@ -8,86 +8,72 @@ import pytz
 import time
 import schedule
 
-print("Agendado para todas as segunda-feira ás 10h00")
-def cardapio():
+def enviar_mensagem(chat_id, mensagem, imagem=None):
+    url = f"https://api.telegram.org/bot{bot_token}/sendPhoto"
+   
+    parametros = {"chat_id": chat_id,
+                  "caption": mensagem,
+                  "parse_mode": "Markdown"}
+
+    files = {"photo": ("imagem.jpg", imagem)}
+    response = requests.post(url, params=parametros, files=files)
+
+    if response is not None:
+        if response.status_code == 200:
+            print("Mensagem enviada com sucesso!")
+        else:
+            print(f"Erro ao enviar mensagem. Código de status: {response.status_code}")
+    else:
+        print("Não houve resposta da requisição.")
+    
+    return response
+
+def main():
     link = "http://www.unirio.br/prae/nutricao-prae-1/cardapios-anteriores-re/cardapios-restaurante-escola-2023"
     requisição = requests.get(link)
-    print(requisição)
+
+    print(f"Site da UNIRIO: {requisição}")
 
     site = BeautifulSoup(requisição.text, "html.parser")
 
-    listas_cardapio = site.find('div',id='parent-fieldname-text-cac82a45c8944a18b462cf8a0d5addd9' )
+    listas_cardapio = site.find('div', id='parent-fieldname-text-cac82a45c8944a18b462cf8a0d5addd9')
     links = listas_cardapio.find_all('a')
 
     if links:
-        # Obter o último link (href) da lista de links
         last_link = links[-1]
         last_href = last_link['href']
         print(f"Último link (href): {last_href}")
 
-        # Exibir o texto do último link
         last_text = last_link.get_text()
-        print(f"Titulo: {last_text}")
+        print(f"Título: {last_text}")
 
-        # Fazer o download da imagem
         response = requests.get(last_href)
 
-        # Verificar se o download foi bem-sucedido
         if response.status_code == 200:
-            # Abrir a imagem usando a biblioteca PIL (Pillow)
-            img = Image.open(BytesIO(response.content))
-
-            # Exibir a imagem no console
-            #plt.imshow(img)
-            #plt.axis('off')  # Remover os eixos do gráfico (opcional)
-            #plt.show()
-                
+            imagem = BytesIO(response.content)
         else:
             print(f"Não foi possível baixar a imagem do link: {last_href}. ERRO: {response.status_code}")
+            return
     else:
         print("Nenhum link encontrado dentro da div.")
+        return
 
-
-
-    # Função para enviar mensagem (texto ou imagem)
-    def enviar_mensagem(chat_id, texto=None, imagem=None):
-        url = f"https://api.telegram.org/bot{bot_token}/sendMessage" if texto else f"https://api.telegram.org/bot{bot_token}/sendPhoto"
-        parametros = {"chat_id": chat_id}
-        if texto:
-            parametros["text"] = texto
-        if imagem:
-            files = {"photo": ("imagem.jpg", imagem)}
-            response = requests.post(url, params=parametros, files=files)
-        else:
-            response = requests.post(url, params=parametros)
-        return response
-
-
-
-    # Download da imagem
-    response = requests.get(last_href)
-    if response.status_code == 200:
-        imagem = BytesIO(response.content)
-    else:
-        print("Não foi possível baixar a imagem.")
-        exit()
-
+    mensagem = "Hey youu! ☀️\n\n"
+    mensagem += f"Segue o *{last_text.lower()}*🍴\n\nLembre-se:\nAlmoço: 11h às 14h\nJantar: 17h às 20h\n\nPreço: R$ 3,00"
+    mensagem += "\n\n[Insta do Restaurante Escola](https://www.instagram.com/restaurante_escola_unirio)\n\n-----------"
 
     try:
-        # Enviar a mensagem de texto
-        enviar_mensagem(chat_id, texto=last_text)
-
-        # Enviar a imagem
-        enviar_mensagem(chat_id, imagem=imagem)
+        enviar_mensagem(chat_id, mensagem, imagem=imagem)
         print("Arquivo e texto enviados com sucesso!")
     except requests.RequestException as e:
         print("Erro ao enviar a mensagem:", e)
 
+# Executa a função main às segundas-feiras às 9h30 no fuso horário da América/São_Paulo
+#schedule.every().monday.at("09:30").do(main)
+
+#while True:
+    #schedule.run_pending()
+    #time.sleep(1)
 
 
-
-schedule.every().monday.at("10:00","America/Sao_Paulo").do(cardapio)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+main()
