@@ -28,6 +28,8 @@ def enviar_mensagem(chat_id, mensagem, imagem=None):
     
     return response
 
+
+
 def main():
     link = "http://www.unirio.br/prae/nutricao-prae-1/cardapios-anteriores-re/cardapios-restaurante-escola-2023"
     requisição = requests.get(link)
@@ -58,9 +60,13 @@ def main():
         print("Nenhum link encontrado dentro da div.")
         return
 
-    mensagem = "Hey youu! ☀️\n\n"
+    mensagem = "Coe galera! "
+    mensagem += "\n\nSobre o cardápio da semana, rolou um pequeno desentendimento com a API do Telegram. Peço desculpas pela confusão! Fiquei na correria para resolver e agora estou de volta nos trilhos, pronto para te mostrar as deliciosas novidades do cardápio. Pode ficar tranquilo e desculpa pelo estômago vazio momentâneo! 😄🍔🥗\n\n"
     mensagem += f"Segue o *{last_text.lower()}*🍴\n\nLembre-se:\nAlmoço: 11h às 14h\nJantar: 17h às 20h\n\nPreço: R$ 3,00"
     mensagem += "\n\n[Insta do Restaurante Escola](https://www.instagram.com/restaurante_escola_unirio)\n\n-----------"
+
+    #mensagem = "Coe galera!\n\nSobre o cardápio da semana, rolou um pequeno desentendimento com a API do Telegram. Peço desculpas pela confusão! Fiquei na correria para resolver e agora estou de volta nos trilhos, pronto para te mostrar as deliciosas novidades do cardápio. Pode ficar tranquilo e desculpa pelo estômago vazio momentâneo! 😄🍔🥗\n\n"
+    #mensagem += f"Segue o *{last_text.lower()}*🍴\n\nLembre-se:\nAlmoço: 11h às 14h\nJantar: 17h às 20h\n\nPreço: R$ 3,00\n\n[Insta do Restaurante Escola](https://www.instagram.com/restaurante_escola_unirio)\n\n-----------"
 
     try:
         enviar_mensagem(chat_id, mensagem, imagem=imagem)
