@@ -8,6 +8,8 @@ import pytz
 import time
 import schedule
 
+
+
 def enviar_mensagem(chat_id, mensagem, imagem=None):
     url = f"https://api.telegram.org/bot{bot_token}/sendPhoto"
    
@@ -31,14 +33,15 @@ def enviar_mensagem(chat_id, mensagem, imagem=None):
 
 
 def main():
-    link = "http://www.unirio.br/prae/nutricao-prae-1/cardapios-anteriores-re/cardapios-restaurante-escola-2023"
+    link = "https://www.unirio.br/prae/nutricao-prae-1/cardapios-anteriores-re/cardapio-restaurante-escola-2024"
+    #link = "http://www.unirio.br/prae/nutricao-prae-1/cardapios-anteriores-re/cardapios-restaurante-escola-2023"
     requisição = requests.get(link)
 
     print(f"Site da UNIRIO: {requisição}")
 
     site = BeautifulSoup(requisição.text, "html.parser")
 
-    listas_cardapio = site.find('div', id='parent-fieldname-text-cac82a45c8944a18b462cf8a0d5addd9')
+    listas_cardapio = site.find('div', id='parent-fieldname-text-f155ab699e8147f0b2c6cc2583039df2')
     links = listas_cardapio.find_all('a')
 
     if links:
@@ -61,12 +64,12 @@ def main():
         return
 
     mensagem = "Coe galera! "
-    mensagem += "\n\nSobre o cardápio da semana, rolou um pequeno desentendimento com a API do Telegram. Peço desculpas pela confusão! Fiquei na correria para resolver e agora estou de volta nos trilhos, pronto para te mostrar as deliciosas novidades do cardápio. Pode ficar tranquilo e desculpa pelo estômago vazio momentâneo! 😄🍔🥗\n\n"
-    mensagem += f"Segue o *{last_text.lower()}*🍴\n\nLembre-se:\nAlmoço: 11h às 14h\nJantar: 17h às 20h\n\nPreço: R$ 3,00"
-    mensagem += "\n\n[Insta do Restaurante Escola](https://www.instagram.com/restaurante_escola_unirio)\n\n-----------"
+    mensagem += f"\nSegue o *{last_text.lower()}*🍴\n\nLembre-se:\nAlmoço: 11h às 14h\nJanta: 17h às 20h\n\nPreço: R$ 3,00"
 
-    #mensagem = "Coe galera!\n\nSobre o cardápio da semana, rolou um pequeno desentendimento com a API do Telegram. Peço desculpas pela confusão! Fiquei na correria para resolver e agora estou de volta nos trilhos, pronto para te mostrar as deliciosas novidades do cardápio. Pode ficar tranquilo e desculpa pelo estômago vazio momentâneo! 😄🍔🥗\n\n"
-    #mensagem += f"Segue o *{last_text.lower()}*🍴\n\nLembre-se:\nAlmoço: 11h às 14h\nJantar: 17h às 20h\n\nPreço: R$ 3,00\n\n[Insta do Restaurante Escola](https://www.instagram.com/restaurante_escola_unirio)\n\n-----------"
+    mensagem += "\n\nVerificar o perfil oficial do RE em caso de alterações no cardápio."
+    mensagem += "\n[Insta do RE](https://www.instagram.com/restaurante_escola_unirio)\n\n-----------"
+
+
 
     try:
         enviar_mensagem(chat_id, mensagem, imagem=imagem)
@@ -74,12 +77,16 @@ def main():
     except requests.RequestException as e:
         print("Erro ao enviar a mensagem:", e)
 
+
+
+
+#main()
+
 # Executa a função main às segundas-feiras às 9h30 no fuso horário da América/São_Paulo
-#schedule.every().monday.at("09:30").do(main)
+schedule.every().friday.at("01:23", "America/Sao_Paulo").do(main)
+print("Aguardando agendamento")
 
-#while True:
-    #schedule.run_pending()
-    #time.sleep(1)
-
-
-main()
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+    
