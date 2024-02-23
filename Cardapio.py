@@ -83,7 +83,7 @@ def main():
 #main()
 
 # Executa a função main às segundas-feiras às 9h30 no fuso horário da América/São_Paulo
-schedule.every().friday.at("01:23", "America/Sao_Paulo").do(main)
+schedule.every().monday.at("10:30", "America/Sao_Paulo").do(main)
 print("Aguardando agendamento")
 
 while True:
